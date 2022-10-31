@@ -171,7 +171,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
         ? TextStyle(
             fontSize: 24.sp, color: Colors.white, fontWeight: FontWeight.w500)
         : TextStyle(
-            fontSize: 34.sp, color: Colors.white, fontWeight: FontWeight.w500);
+            fontSize: 24.sp, color: Colors.white, fontWeight: FontWeight.w500);
 
     final Widget actions = Container(
       alignment: AlignmentDirectional.centerEnd,
