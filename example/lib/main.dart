@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
@@ -16,15 +17,21 @@ class ExampleApp extends StatelessWidget {
   // --------------------------------- METHODS ---------------------------------
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Month Year Picker Example',
-      home: MyHomePage(),
-      localizationsDelegates: [
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        MonthYearPickerLocalizations.delegate,
-      ],
-    );
+    return ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: false,
+        builder: (context, child) {
+          return const MaterialApp(
+            title: 'Month Year Picker Example',
+            home: MyHomePage(),
+            localizationsDelegates: [
+              GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              MonthYearPickerLocalizations.delegate,
+            ],
+          );
+        });
   }
 }
 
@@ -80,12 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }) async {
     final localeObj = locale != null ? Locale(locale) : null;
     final selected = await showMonthYearPicker(
-      context: context,
-      initialDate: _selected ?? DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime(2022),
-      locale: localeObj,
-    );
+        context: context,
+        initialDate: _selected ?? DateTime.now(),
+        firstDate: DateTime(2022),
+        lastDate: DateTime(2023),
+        locale: localeObj,
+        pickerColor: Colors.orange);
     // final selected = await showDatePicker(
     //   context: context,
     //   initialDate: _selected ?? DateTime.now(),

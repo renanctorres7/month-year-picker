@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 // ################################## CLASSES ##################################
@@ -12,6 +13,7 @@ class MonthPicker extends StatefulWidget {
     required this.onMonthSelected,
     required this.onPageChanged,
     this.selectableMonthYearPredicate,
+    required this.pickerColor,
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +25,7 @@ class MonthPicker extends StatefulWidget {
   final ValueChanged<DateTime> onMonthSelected;
   final ValueChanged<DateTime> onPageChanged;
   final SelectableMonthYearPredicate? selectableMonthYearPredicate;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
@@ -93,19 +96,19 @@ class MonthPickerState extends State<MonthPicker> {
   Widget _buildItem(final BuildContext context, final int page) {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.only(right: 35.w),
       crossAxisCount: 4,
       children: [
         for (var i = 0; i < 12; i++)
           _MonthButton(
-            page: page,
-            index: i,
-            firstDate: widget.firstDate,
-            lastDate: widget.lastDate,
-            selectedDate: widget.selectedDate,
-            onMonthSelected: widget.onMonthSelected,
-            selectableMonthYearPredicate: widget.selectableMonthYearPredicate,
-          ),
+              page: page,
+              index: i,
+              firstDate: widget.firstDate,
+              lastDate: widget.lastDate,
+              selectedDate: widget.selectedDate,
+              onMonthSelected: widget.onMonthSelected,
+              selectableMonthYearPredicate: widget.selectableMonthYearPredicate,
+              pickerColor: widget.pickerColor),
       ],
     );
   }
@@ -133,6 +136,7 @@ class YearPicker extends StatefulWidget {
     required this.onYearSelected,
     required this.onPageChanged,
     this.selectableMonthYearPredicate,
+    required this.pickerColor,
     Key? key,
   }) : super(key: key);
 
@@ -144,6 +148,7 @@ class YearPicker extends StatefulWidget {
   final ValueChanged<DateTime> onYearSelected;
   final ValueChanged<DateTime> onPageChanged;
   final SelectableMonthYearPredicate? selectableMonthYearPredicate;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
@@ -211,19 +216,19 @@ class YearPickerState extends State<YearPicker> {
   Widget _buildItem(final BuildContext context, final int page) {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.only(right: 35.w),
       crossAxisCount: 4,
       children: [
         for (var i = 0; i < 12; i++)
           _YearButton(
-            page: page,
-            index: i,
-            firstDate: widget.firstDate,
-            lastDate: widget.lastDate,
-            selectedDate: widget.selectedDate,
-            onYearSelected: widget.onYearSelected,
-            selectableMonthYearPredicate: widget.selectableMonthYearPredicate,
-          ),
+              page: page,
+              index: i,
+              firstDate: widget.firstDate,
+              lastDate: widget.lastDate,
+              selectedDate: widget.selectedDate,
+              onYearSelected: widget.onYearSelected,
+              selectableMonthYearPredicate: widget.selectableMonthYearPredicate,
+              pickerColor: widget.pickerColor),
       ],
     );
   }
@@ -244,6 +249,7 @@ class _MonthButton extends StatelessWidget {
     required this.selectedDate,
     required this.onMonthSelected,
     this.selectableMonthYearPredicate,
+    required this.pickerColor,
     Key? key,
   }) : super(key: key);
 
@@ -255,6 +261,7 @@ class _MonthButton extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onMonthSelected;
   final SelectableMonthYearPredicate? selectableMonthYearPredicate;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
@@ -277,6 +284,7 @@ class _MonthButton extends StatelessWidget {
       isEnabled: isEnabled,
       isHighlighted: isThisMonth,
       isSelected: isSelected,
+      pickerColor: pickerColor,
       onPressed: () => onMonthSelected(DateTime(date.year, date.month)),
     );
   }
@@ -292,6 +300,7 @@ class _YearButton extends StatelessWidget {
     required this.selectedDate,
     required this.onYearSelected,
     this.selectableMonthYearPredicate,
+    required this.pickerColor,
     Key? key,
   }) : super(key: key);
 
@@ -303,6 +312,7 @@ class _YearButton extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onYearSelected;
   final SelectableMonthYearPredicate? selectableMonthYearPredicate;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
@@ -324,6 +334,7 @@ class _YearButton extends StatelessWidget {
       isEnabled: isEnabled,
       isHighlighted: isThisYear,
       isSelected: isSelected,
+      pickerColor: pickerColor,
       onPressed: () => onYearSelected(DateTime(date.year)),
     );
   }
@@ -337,6 +348,7 @@ class _Button extends StatelessWidget {
     required this.isHighlighted,
     required this.isSelected,
     required this.onPressed,
+    required this.pickerColor,
     Key? key,
   }) : super(key: key);
 
@@ -346,30 +358,36 @@ class _Button extends StatelessWidget {
   final bool isHighlighted;
   final bool isSelected;
   final VoidCallback onPressed;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final buttonBackground = isSelected ? colorScheme.secondary : null;
+    final buttonBackground = isSelected ? pickerColor : null;
     final buttonText = isSelected
-        ? colorScheme.onSecondary
+        ? Colors.white
         : isHighlighted
-            ? colorScheme.secondary
+            ? pickerColor
             : colorScheme.onSurface;
 
-    return TextButton(
-      onPressed: isEnabled ? onPressed : null,
-      style: TextButton.styleFrom(
-        backgroundColor: buttonBackground,
-        primary: buttonText,
-        onSurface: buttonText,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100.0),
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: TextButton(
+        onPressed: isEnabled ? onPressed : null,
+        style: TextButton.styleFrom(
+          foregroundColor: buttonText,
+          backgroundColor: buttonBackground,
+          disabledForegroundColor: buttonText.withOpacity(0.38),
+          fixedSize: Size(10.w, 10.w),
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          textStyle: TextStyle(color: buttonText, fontSize: 12.sp),
         ),
-        textStyle: TextStyle(color: buttonText),
+        child: Text(label),
       ),
-      child: Text(label),
     );
   }
 }

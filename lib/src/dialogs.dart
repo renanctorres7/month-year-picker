@@ -1,17 +1,18 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide YearPicker;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'l10n/month_year_picker_localizations.dart';
 import 'pickers.dart';
 import 'utils.dart';
 
 // ################################# CONSTANTS #################################
-const _portraitDialogSize = Size(320.0, 480.0);
-const _landscapeDialogSize = Size(496.0, 344.0);
+final _portraitDialogSize = Size(320.0.w, 430.0.h);
+final _landscapeDialogSize = Size(496.0.w, 344.0.h);
 const _dialogSizeAnimationDuration = Duration(milliseconds: 200);
-const _datePickerHeaderLandscapeWidth = 192.0;
-const _datePickerHeaderPortraitHeight = 120.0;
+final _datePickerHeaderLandscapeWidth = 192.0.w;
+final _datePickerHeaderPortraitHeight = 120.0.h;
 const _headerPaddingLandscape = 16.0;
 
 // ################################# FUNCTIONS #################################
@@ -24,6 +25,7 @@ Future<DateTime?> showMonthYearPicker({
   required DateTime initialDate,
   required DateTime firstDate,
   required DateTime lastDate,
+  required Color pickerColor,
   SelectableMonthYearPredicate? selectableMonthYearPredicate,
   Locale? locale,
   bool useRootNavigator = true,
@@ -53,12 +55,12 @@ Future<DateTime?> showMonthYearPicker({
   assert(debugCheckHasDirectionality(context));
 
   Widget dialog = MonthYearPickerDialog(
-    initialDate: initialDate,
-    firstDate: firstDate,
-    lastDate: lastDate,
-    initialMonthYearPickerMode: initialMonthYearPickerMode,
-    selectableMonthYearPredicate: selectableMonthYearPredicate,
-  );
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      initialMonthYearPickerMode: initialMonthYearPickerMode,
+      selectableMonthYearPredicate: selectableMonthYearPredicate,
+      pickerColor: pickerColor);
 
   if (textDirection != null) {
     dialog = Directionality(
@@ -98,6 +100,7 @@ class MonthYearPickerDialog extends StatefulWidget {
     required this.firstDate,
     required this.lastDate,
     required this.initialMonthYearPickerMode,
+    required this.pickerColor,
     this.selectableMonthYearPredicate,
   }) : super(key: key);
 
@@ -107,6 +110,7 @@ class MonthYearPickerDialog extends StatefulWidget {
   final DateTime lastDate;
   final MonthYearPickerMode initialMonthYearPickerMode;
   final SelectableMonthYearPredicate? selectableMonthYearPredicate;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
@@ -153,37 +157,42 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
     final materialLocalizations = MaterialLocalizations.of(context);
     final localizations = MonthYearPickerLocalizations.of(context);
     final media = MediaQuery.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+
     final orientation = media.orientation;
-    final textTheme = theme.textTheme;
+
     // Constrain the textScaleFactor to the largest supported value to prevent
     // layout issues.
     final textScaleFactor = math.min(media.textScaleFactor, 1.3);
     final direction = Directionality.of(context);
 
     final dateText = materialLocalizations.formatMonthYear(_selectedDate);
-    final onPrimarySurface = colorScheme.brightness == Brightness.light
-        ? colorScheme.onPrimary
-        : colorScheme.onSurface;
+
     final dateStyle = orientation == Orientation.landscape
-        ? textTheme.headline5?.copyWith(color: onPrimarySurface)
-        : textTheme.headline4?.copyWith(color: onPrimarySurface);
+        ? TextStyle(
+            fontSize: 24.sp, color: Colors.white, fontWeight: FontWeight.w500)
+        : TextStyle(
+            fontSize: 34.sp, color: Colors.white, fontWeight: FontWeight.w500);
 
     final Widget actions = Container(
       alignment: AlignmentDirectional.centerEnd,
-      constraints: const BoxConstraints(minHeight: 52.0),
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      constraints: BoxConstraints(maxHeight: 30.0.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.0.w),
       child: OverflowBar(
         spacing: 8.0,
         children: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(localizations.cancelButtonLabel),
+            child: Text(
+              localizations.cancelButtonLabel,
+              style: TextStyle(color: widget.pickerColor),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, _selectedDate),
-            child: Text(localizations.okButtonLabel),
+            child: Text(
+              localizations.okButtonLabel,
+              style: TextStyle(color: widget.pickerColor),
+            ),
           ),
         ],
       ),
@@ -196,19 +205,20 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
       titleSemanticsLabel: semanticText,
       titleStyle: dateStyle,
       orientation: orientation,
+      pickerColor: widget.pickerColor,
     );
 
     final switcher = Stack(
       children: [
         TextButton(
           style: TextButton.styleFrom(
+            foregroundColor: widget.pickerColor,
             padding: const EdgeInsetsDirectional.fromSTEB(
               32.0,
               24.0,
               8.0,
               24.0,
             ),
-            primary: Theme.of(context).textTheme.caption?.color,
           ),
           child: Row(
             children: [
@@ -252,7 +262,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
             ],
           ),
         ),
-        const SizedBox(width: 12.0),
+        SizedBox(width: 12.0.w),
       ],
     );
 
@@ -277,6 +287,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                 height: constraints.maxHeight,
                 child: YearPicker(
                   key: _yearPickerState,
+                  pickerColor: widget.pickerColor,
                   initialDate: _selectedDate,
                   firstDate: widget.firstDate,
                   lastDate: widget.lastDate,
@@ -299,6 +310,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                 height: constraints.maxHeight,
                 child: MonthPicker(
                   key: _monthPickerState,
+                  pickerColor: widget.pickerColor,
                   initialDate: _selectedDate,
                   firstDate: widget.firstDate,
                   lastDate: widget.lastDate,
@@ -316,63 +328,70 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
     );
 
     final dialogSize = _dialogSize * textScaleFactor;
-    return Directionality(
-      textDirection: direction,
-      child: Dialog(
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 24.0,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: AnimatedContainer(
-          width: dialogSize.width,
-          height: dialogSize.height,
-          duration: _dialogSizeAnimationDuration,
-          curve: Curves.easeIn,
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaleFactor: textScaleFactor,
-            ),
-            child: Builder(
-              builder: (context) {
-                switch (orientation) {
-                  case Orientation.portrait:
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        header,
-                        switcher,
-                        Expanded(child: picker),
-                        actions,
-                      ],
-                    );
-                  case Orientation.landscape:
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        header,
-                        Flexible(
-                          child: Column(
+    return ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: false,
+        builder: (context, child) {
+          return Directionality(
+            textDirection: direction,
+            child: Dialog(
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 24.0,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: AnimatedContainer(
+                width: dialogSize.width,
+                height: dialogSize.height,
+                duration: _dialogSizeAnimationDuration,
+                curve: Curves.easeIn,
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    textScaleFactor: textScaleFactor,
+                  ),
+                  child: Builder(
+                    builder: (context) {
+                      switch (orientation) {
+                        case Orientation.portrait:
+                          return Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
+                              header,
                               switcher,
                               Expanded(child: picker),
                               actions,
                             ],
-                          ),
-                        ),
-                      ],
-                    );
-                }
-              },
+                          );
+                        case Orientation.landscape:
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              header,
+                              Flexible(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    switcher,
+                                    Expanded(child: picker),
+                                    actions,
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                      }
+                    },
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        });
   }
 
   void _updateYear(DateTime date) {
@@ -425,14 +444,15 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
 
 class _Header extends StatelessWidget {
   // ------------------------------- CONSTRUCTORS ------------------------------
-  const _Header({
-    Key? key,
-    required this.helpText,
-    required this.titleText,
-    this.titleSemanticsLabel,
-    required this.titleStyle,
-    required this.orientation,
-  }) : super(key: key);
+  const _Header(
+      {Key? key,
+      required this.helpText,
+      required this.titleText,
+      this.titleSemanticsLabel,
+      required this.titleStyle,
+      required this.orientation,
+      required this.pickerColor})
+      : super(key: key);
 
   // ---------------------------------- FIELDS ---------------------------------
   final String helpText;
@@ -440,25 +460,17 @@ class _Header extends StatelessWidget {
   final String? titleSemanticsLabel;
   final TextStyle? titleStyle;
   final Orientation orientation;
+  final Color pickerColor;
 
   // --------------------------------- METHODS ---------------------------------
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-
     // The header should use the primary color in light themes and surface color
     // in dark.
-    final isDark = colorScheme.brightness == Brightness.dark;
-    final primarySurfaceColor =
-        isDark ? colorScheme.surface : colorScheme.primary;
-    final onPrimarySurfaceColor =
-        isDark ? colorScheme.onSurface : colorScheme.onPrimary;
 
-    final helpStyle = textTheme.overline?.copyWith(
-      color: onPrimarySurfaceColor,
-    );
+    final primarySurfaceColor = pickerColor;
+
+    final helpStyle = TextStyle(fontSize: 10.sp, color: Colors.white);
 
     final help = Text(
       helpText,
