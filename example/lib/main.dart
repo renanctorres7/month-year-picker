@@ -26,9 +26,13 @@ class ExampleApp extends StatelessWidget {
             title: 'Month Year Picker Example',
             home: MyHomePage(),
             localizationsDelegates: [
-              GlobalWidgetsLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
-              MonthYearPickerLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              MonthYearPickerLocalizations.delegate
+            ],
+            supportedLocales: [
+              Locale('pt', 'BR'),
             ],
           );
         });

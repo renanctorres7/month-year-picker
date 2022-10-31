@@ -483,7 +483,7 @@ class _Header extends StatelessWidget {
       titleText,
       semanticsLabel: titleSemanticsLabel ?? titleText,
       style: titleStyle,
-      maxLines: orientation == Orientation.portrait ? 1 : 2,
+      maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
 
