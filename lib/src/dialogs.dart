@@ -131,7 +131,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
     final orientation = MediaQuery.of(context).orientation;
     final offset =
         Theme.of(context).materialTapTargetSize == MaterialTapTargetSize.padded
-            ? const Offset(0.0, 24.0)
+            ? Offset(0.0, 24.0.h)
             : Offset.zero;
     switch (orientation) {
       case Orientation.portrait:
