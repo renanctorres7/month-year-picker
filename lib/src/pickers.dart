@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 // ################################## CLASSES ##################################
@@ -98,7 +97,7 @@ class MonthPickerState extends State<MonthPicker> {
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 4 / 4,
       crossAxisCount: 4,
-      padding: EdgeInsets.only(bottom: 30.h),
+      padding: const EdgeInsets.only(bottom: 30),
       children: [
         for (var i = 0; i < 12; i++)
           _MonthButton(
@@ -219,7 +218,7 @@ class YearPickerState extends State<YearPicker> {
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 4 / 4,
       crossAxisCount: 4,
-      padding: EdgeInsets.only(bottom: 30.h),
+      padding: const EdgeInsets.only(bottom: 30),
       children: [
         for (var i = 0; i < 12; i++)
           _YearButton(
@@ -375,20 +374,20 @@ class _Button extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(10),
-      width: 20.w,
-      height: 20.w,
+      width: 20,
+      height: 20,
       child: TextButton(
         onPressed: isEnabled ? onPressed : null,
         style: TextButton.styleFrom(
           foregroundColor: buttonText,
           backgroundColor: buttonBackground,
           disabledForegroundColor: buttonText.withOpacity(0.38),
-          fixedSize: Size(10.w, 10.w),
+          fixedSize: const Size(10, 10),
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(100.0),
           ),
-          textStyle: TextStyle(color: buttonText, fontSize: 12.sp),
+          textStyle: TextStyle(color: buttonText, fontSize: 12),
         ),
         child: Text(label),
       ),

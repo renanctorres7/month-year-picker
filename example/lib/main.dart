@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
@@ -17,25 +16,19 @@ class ExampleApp extends StatelessWidget {
   // --------------------------------- METHODS ---------------------------------
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-        designSize: const Size(411.4, 683.4),
-        minTextAdapt: true,
-        splitScreenMode: false,
-        builder: (context, child) {
-          return const MaterialApp(
-            title: 'Month Year Picker Example',
-            home: MyHomePage(),
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              MonthYearPickerLocalizations.delegate
-            ],
-            supportedLocales: [
-              Locale('pt', 'BR'),
-            ],
-          );
-        });
+    return const MaterialApp(
+      title: 'Month Year Picker Example',
+      home: MyHomePage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        MonthYearPickerLocalizations.delegate
+      ],
+      supportedLocales: [
+        Locale('pt', 'BR'),
+      ],
+    );
   }
 }
 
