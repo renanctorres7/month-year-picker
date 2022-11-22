@@ -8,12 +8,16 @@ import 'pickers.dart';
 import 'utils.dart';
 
 // ################################# CONSTANTS #################################
-final _portraitDialogSize = Size(320.0.w, 430.0.h);
+Size _portraitDialogSize(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return Size(size.width * 0.5, size.height * 0.7);
+}
+
 final _landscapeDialogSize = Size(496.0.w, 344.0.h);
 const _dialogSizeAnimationDuration = Duration(milliseconds: 200);
 final _datePickerHeaderLandscapeWidth = 192.0.w;
 final _datePickerHeaderPortraitHeight = 120.0.h;
-const _headerPaddingLandscape = 16.0;
+final _headerPaddingLandscape = 16.0.w;
 
 // ################################# FUNCTIONS #################################
 /// Displays month year picker dialog.
@@ -129,15 +133,12 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
   // -------------------------------- PROPERTIES -------------------------------
   Size get _dialogSize {
     final orientation = MediaQuery.of(context).orientation;
-    final offset =
-        Theme.of(context).materialTapTargetSize == MaterialTapTargetSize.padded
-            ? Offset(0.0, 24.0.h)
-            : Offset.zero;
+
     switch (orientation) {
       case Orientation.portrait:
-        return _portraitDialogSize + offset;
+        return _portraitDialogSize(context);
       case Orientation.landscape:
-        return _landscapeDialogSize + offset;
+        return _landscapeDialogSize;
     }
   }
 
@@ -162,7 +163,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
 
     // Constrain the textScaleFactor to the largest supported value to prevent
     // layout issues.
-    final textScaleFactor = math.min(media.textScaleFactor, 1.3);
+
     final direction = Directionality.of(context);
 
     final dateText = materialLocalizations.formatMonthYear(_selectedDate);
@@ -174,8 +175,8 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
             fontSize: 24.sp, color: Colors.white, fontWeight: FontWeight.w500);
 
     final Widget actions = Container(
+      height: 50.h,
       alignment: AlignmentDirectional.centerEnd,
-      constraints: BoxConstraints(maxHeight: 30.0.h),
       padding: EdgeInsets.symmetric(horizontal: 8.0.w),
       child: OverflowBar(
         spacing: 8.0,
@@ -184,14 +185,14 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               localizations.cancelButtonLabel,
-              style: TextStyle(color: widget.pickerColor),
+              style: TextStyle(color: widget.pickerColor, fontSize: 14.sp),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, _selectedDate),
             child: Text(
               localizations.okButtonLabel,
-              style: TextStyle(color: widget.pickerColor),
+              style: TextStyle(color: widget.pickerColor, fontSize: 14.sp),
             ),
           ),
         ],
@@ -213,11 +214,8 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: widget.pickerColor,
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              32.0,
-              24.0,
-              8.0,
-              24.0,
+            padding: EdgeInsets.only(
+              left: 30.w,
             ),
           ),
           child: Row(
@@ -271,16 +269,18 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
         final pickerMaxWidth =
             _landscapeDialogSize.width - _datePickerHeaderLandscapeWidth;
         final width = constraints.maxHeight < pickerMaxWidth
-            ? constraints.maxHeight / 3.0 * 4.0
+            ? constraints.maxHeight / 2.8 * 4
             : null;
+
+        final value = (pickerMaxWidth - (width ?? pickerMaxWidth));
 
         return Stack(
           children: [
             AnimatedPositioned(
               duration: _dialogSizeAnimationDuration,
               curve: Curves.easeOut,
-              left: 0.0,
-              right: (pickerMaxWidth - (width ?? pickerMaxWidth)),
+              left: 10.w,
+              right: 10.w,
               top: _isShowingYear ? 0.0 : -constraints.maxHeight,
               bottom: _isShowingYear ? 0.0 : constraints.maxHeight,
               child: SizedBox(
@@ -302,8 +302,8 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
             AnimatedPositioned(
               duration: _dialogSizeAnimationDuration,
               curve: Curves.easeOut,
-              left: 0.0,
-              right: (pickerMaxWidth - (width ?? pickerMaxWidth)),
+              left: 10.w,
+              right: 10.w,
               top: _isShowingYear ? constraints.maxHeight : 0.0,
               bottom: _isShowingYear ? -constraints.maxHeight : 0.0,
               child: SizedBox(
@@ -327,71 +327,64 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
       },
     );
 
-    final dialogSize = _dialogSize * textScaleFactor;
-    return ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: false,
-        builder: (context, child) {
-          return Directionality(
-            textDirection: direction,
-            child: Dialog(
-              insetPadding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 24.0,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: AnimatedContainer(
-                width: dialogSize.width,
-                height: dialogSize.height,
-                duration: _dialogSizeAnimationDuration,
-                curve: Curves.easeIn,
-                child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    textScaleFactor: textScaleFactor,
-                  ),
-                  child: Builder(
-                    builder: (context) {
-                      switch (orientation) {
-                        case Orientation.portrait:
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              header,
-                              switcher,
-                              Expanded(child: picker),
-                              actions,
-                            ],
-                          );
-                        case Orientation.landscape:
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              header,
-                              Flexible(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    switcher,
-                                    Expanded(child: picker),
-                                    actions,
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
+    final dialogSize = _dialogSize;
+    return Directionality(
+      textDirection: direction,
+      child: Dialog(
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: 16.0.h,
+          vertical: 16.0.w,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: AnimatedContainer(
+          width: dialogSize.width,
+          height: dialogSize.height,
+          duration: _dialogSizeAnimationDuration,
+          curve: Curves.easeIn,
+          child: Builder(
+            builder: (context) {
+              switch (orientation) {
+                case Orientation.portrait:
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      header,
+                      switcher,
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          child: picker,
+                        ),
+                      ),
+                      actions,
+                    ],
+                  );
+                case Orientation.landscape:
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      header,
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            switcher,
+                            Expanded(child: picker),
+                            actions,
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+              }
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   void _updateYear(DateTime date) {
@@ -494,16 +487,16 @@ class _Header extends StatelessWidget {
           child: Material(
             color: primarySurfaceColor,
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(
-                start: 24.0,
-                end: 12.0,
+              padding: EdgeInsetsDirectional.only(
+                start: 24.0.w,
+                end: 12.0.w,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16.0),
+                  SizedBox(height: 16.0.h),
                   help,
-                  const Flexible(child: SizedBox(height: 38.0)),
+                  Flexible(child: SizedBox(height: 38.0.h)),
                   title,
                 ],
               ),
@@ -518,17 +511,17 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16.0),
+                SizedBox(height: 16.0.h),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: _headerPaddingLandscape,
                   ),
                   child: help,
                 ),
-                const SizedBox(height: 56.0),
+                SizedBox(height: 56.0.h),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: _headerPaddingLandscape,
                     ),
                     child: title,

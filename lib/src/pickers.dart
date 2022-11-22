@@ -96,8 +96,9 @@ class MonthPickerState extends State<MonthPicker> {
   Widget _buildItem(final BuildContext context, final int page) {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(right: 35.w),
+      childAspectRatio: 4 / 4,
       crossAxisCount: 4,
+      padding: EdgeInsets.only(bottom: 30.h),
       children: [
         for (var i = 0; i < 12; i++)
           _MonthButton(
@@ -216,8 +217,9 @@ class YearPickerState extends State<YearPicker> {
   Widget _buildItem(final BuildContext context, final int page) {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(right: 35.w),
+      childAspectRatio: 4 / 4,
       crossAxisCount: 4,
+      padding: EdgeInsets.only(bottom: 30.h),
       children: [
         for (var i = 0; i < 12; i++)
           _YearButton(
@@ -373,6 +375,8 @@ class _Button extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(10),
+      width: 20.w,
+      height: 20.w,
       child: TextButton(
         onPressed: isEnabled ? onPressed : null,
         style: TextButton.styleFrom(
