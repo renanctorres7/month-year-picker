@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart' hide YearPicker;
 
 import 'l10n/month_year_picker_localizations.dart';
@@ -272,13 +270,13 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
 
     final picker = LayoutBuilder(
       builder: (context, constraints) {
-        final pickerMaxWidth =
-            _landscapeDialogSize.width - _datePickerHeaderLandscapeWidth;
-        final width = constraints.maxHeight < pickerMaxWidth
-            ? constraints.maxHeight / 2.8 * 4
-            : null;
+        // final pickerMaxWidth =
+        //     _landscapeDialogSize.width - _datePickerHeaderLandscapeWidth;
+        // final width = constraints.maxHeight < pickerMaxWidth
+        //     ? constraints.maxHeight / 2.8 * 4
+        //     : null;
 
-        final value = (pickerMaxWidth - (width ?? pickerMaxWidth));
+        //    final value = (pickerMaxWidth - (width ?? pickerMaxWidth));
 
         return Stack(
           children: [
@@ -334,9 +332,6 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
     );
 
     return LayoutBuilder(builder: (context, constraints) {
-      print(constraints.maxHeight);
-      print(constraints.maxWidth);
-
       final width = _dialogSize(constraints.maxHeight).width;
       final height = _dialogSize(constraints.maxHeight).height;
 

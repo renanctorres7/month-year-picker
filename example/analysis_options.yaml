@@ -70,7 +70,6 @@ linter:
     - prefer_final_fields
     - use_setters_to_change_properties
     - avoid_setters_without_getters
-    - avoid_returning_null
     - avoid_returning_this
     - type_annotate_public_apis
     - prefer_typing_uninitialized_variables

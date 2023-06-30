@@ -86,8 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final selected = await showMonthYearPicker(
         context: context,
         initialDate: _selected ?? DateTime.now(),
-        firstDate: DateTime(2022),
-        lastDate: DateTime(2023),
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
         locale: localeObj,
         pickerColor: Colors.orange);
     // final selected = await showDatePicker(
